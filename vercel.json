@@ -2,7 +2,7 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "https://aizhanba.com",
+      "destination": "https://www.aizhanba.com",
       "permanent": true
     }
   ]
