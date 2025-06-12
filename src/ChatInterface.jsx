@@ -47,7 +47,7 @@ const ChatInterface = () => {
       title: 'Новый чат',
       messages: [{
         role: 'assistant',
-        content: 'Привет! Я ваш AI ассистент на базе Groq. Чем могу помочь?'
+        content: 'Ара миня зовут Бобикджон! Ара, когда в Доту?'
       }],
       lastUpdated: new Date()
     }
