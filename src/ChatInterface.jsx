@@ -158,7 +158,9 @@ const ChatInterface = () => {
       left: 0,
       right: 0,
       bottom: 0,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      touchAction: 'manipulation',
+      WebkitOverflowScrolling: 'touch',
     }}>
       {/* Sidebar */}
       <Drawer
@@ -172,18 +174,23 @@ const ChatInterface = () => {
           '& .MuiDrawer-paper': {
             width: { xs: '100%', sm: 280 },
             boxSizing: 'border-box',
-            bgcolor: alpha(theme.palette.background.paper, 0.9),
+            bgcolor: alpha(theme.palette.background.paper, 0.95),
             backdropFilter: 'blur(10px)',
             borderRight: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+            touchAction: 'manipulation',
           },
         }}
       >
         <Box sx={{ 
-          p: 2, 
+          p: { xs: 1.5, sm: 2 }, 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
-          height: { xs: '56px', sm: '64px' }
+          height: { xs: '56px', sm: '64px' },
+          position: 'sticky',
+          top: 0,
+          bgcolor: 'inherit',
+          zIndex: 1,
         }}>
           <Typography variant="h6" sx={{ 
             fontWeight: 600,
@@ -191,7 +198,15 @@ const ChatInterface = () => {
           }}>
             История чатов
           </Typography>
-          <IconButton onClick={() => setIsSidebarOpen(false)}>
+          <IconButton 
+            onClick={() => setIsSidebarOpen(false)}
+            sx={{
+              p: { xs: 1, sm: 1.5 },
+              '&:active': {
+                transform: 'scale(0.95)',
+              },
+            }}
+          >
             <MenuIcon />
           </IconButton>
         </Box>
@@ -202,8 +217,13 @@ const ChatInterface = () => {
           onClick={createNewChat}
           sx={{ 
             m: 1,
-            height: { xs: '40px', sm: '48px' },
-            fontSize: { xs: '0.875rem', sm: '1rem' }
+            height: { xs: '44px', sm: '48px' },
+            fontSize: { xs: '0.875rem', sm: '1rem' },
+            borderRadius: 2,
+            textTransform: 'none',
+            '&:active': {
+              transform: 'scale(0.98)',
+            },
           }}
           variant="contained"
         >
@@ -211,7 +231,15 @@ const ChatInterface = () => {
         </Button>
         <List sx={{ 
           overflow: 'auto', 
-          height: { xs: 'calc(100vh - 120px)', sm: 'calc(100vh - 120px)' }
+          height: { xs: 'calc(100vh - 120px)', sm: 'calc(100vh - 120px)' },
+          px: { xs: 0.5, sm: 1 },
+          '&::-webkit-scrollbar': {
+            width: '4px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: alpha(theme.palette.primary.main, 0.2),
+            borderRadius: '4px',
+          },
         }}>
           {chatSessions.map((chat) => (
             <ListItemButton
@@ -225,11 +253,14 @@ const ChatInterface = () => {
               }}
               sx={{
                 mb: 0.5,
-                borderRadius: 1,
-                mx: 1,
-                py: { xs: 1, sm: 1.5 },
+                borderRadius: 2,
+                mx: 0.5,
+                py: { xs: 1.5, sm: 1.5 },
                 '&.Mui-selected': {
                   bgcolor: alpha(theme.palette.primary.main, 0.1),
+                },
+                '&:active': {
+                  transform: 'scale(0.98)',
                 },
               }}
             >
@@ -240,12 +271,12 @@ const ChatInterface = () => {
                   noWrap: true,
                   sx: { 
                     fontWeight: chat.id === selectedChatId ? 600 : 400,
-                    fontSize: { xs: '0.9rem', sm: '1rem' }
+                    fontSize: { xs: '0.95rem', sm: '1rem' }
                   }
                 }}
                 secondaryTypographyProps={{
                   noWrap: true,
-                  fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                  fontSize: { xs: '0.75rem', sm: '0.75rem' }
                 }}
               />
               <IconButton
@@ -254,6 +285,12 @@ const ChatInterface = () => {
                   e.stopPropagation();
                   setSelectedChatId(chat.id);
                   setIsDeleteDialogOpen(true);
+                }}
+                sx={{
+                  p: { xs: 1, sm: 1.5 },
+                  '&:active': {
+                    transform: 'scale(0.9)',
+                  },
                 }}
               >
                 <DeleteIcon fontSize="small" />
@@ -289,7 +326,13 @@ const ChatInterface = () => {
           <IconButton
             color="inherit"
             onClick={() => setIsSidebarOpen(true)}
-            sx={{ mr: 1 }}
+            sx={{ 
+              mr: 1,
+              p: { xs: 1, sm: 1.5 },
+              '&:active': {
+                transform: 'scale(0.95)',
+              },
+            }}
           >
             <MenuIcon />
           </IconButton>
@@ -328,10 +371,14 @@ const ChatInterface = () => {
             }}
             title="Очистить чат"
             sx={{
+              p: { xs: 1, sm: 1.5 },
               '&:hover': {
                 transform: 'rotate(180deg)',
                 transition: 'transform 0.3s ease-in-out'
-              }
+              },
+              '&:active': {
+                transform: 'rotate(180deg) scale(0.95)',
+              },
             }}
           >
             <RefreshIcon />
@@ -346,7 +393,7 @@ const ChatInterface = () => {
           display: 'flex',
           flexDirection: 'column',
           '&::-webkit-scrollbar': {
-            width: '8px',
+            width: '4px',
           },
           '&::-webkit-scrollbar-track': {
             background: alpha(theme.palette.primary.main, 0.1),
@@ -359,6 +406,7 @@ const ChatInterface = () => {
               background: alpha(theme.palette.primary.main, 0.5),
             },
           },
+          WebkitOverflowScrolling: 'touch',
         }}>
           <List sx={{ 
             width: '100%',
@@ -412,8 +460,8 @@ const ChatInterface = () => {
                       mr: msg.role === 'user' ? 1 : 0,
                       boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                       transition: 'transform 0.2s ease-in-out',
-                      '&:hover': {
-                        transform: 'translateY(-2px)',
+                      '&:active': {
+                        transform: 'scale(0.98)',
                       },
                     }}
                     primary={
@@ -425,7 +473,7 @@ const ChatInterface = () => {
                           whiteSpace: 'pre-wrap',
                           lineHeight: 1.6,
                           color: theme.palette.text.primary,
-                          fontSize: { xs: '0.9rem', sm: '1rem' }
+                          fontSize: { xs: '0.95rem', sm: '1rem' }
                         }}
                       >
                         {msg.content}
@@ -440,7 +488,7 @@ const ChatInterface = () => {
                           display: 'block', 
                           mt: 1,
                           opacity: 0.7,
-                          fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                          fontSize: { xs: '0.75rem', sm: '0.75rem' }
                         }}
                       >
                         {msg.role === 'user' ? 'Вы' : 'AI ассистент'} • {new Date().toLocaleTimeString()}
@@ -514,13 +562,17 @@ const ChatInterface = () => {
                   borderRadius: 3,
                   bgcolor: 'background.paper',
                   transition: 'all 0.2s ease-in-out',
-                  fontSize: { xs: '0.9rem', sm: '1rem' },
+                  fontSize: { xs: '0.95rem', sm: '1rem' },
+                  minHeight: { xs: '44px', sm: '48px' },
                   '&:hover': {
                     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                   },
                   '&.Mui-focused': {
                     boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                   },
+                },
+                '& .MuiOutlinedInput-input': {
+                  padding: { xs: '12px 14px', sm: '14px 16px' },
                 },
               }}
             />
@@ -531,11 +583,14 @@ const ChatInterface = () => {
               sx={{
                 bgcolor: theme.palette.primary.main,
                 color: 'white',
-                width: { xs: 40, sm: 48 },
-                height: { xs: 40, sm: 48 },
+                width: { xs: '44px', sm: '48px' },
+                height: { xs: '44px', sm: '48px' },
                 '&:hover': {
                   bgcolor: theme.palette.primary.dark,
                   transform: 'scale(1.05)',
+                },
+                '&:active': {
+                  transform: 'scale(0.95)',
                 },
                 '&:disabled': {
                   bgcolor: alpha(theme.palette.primary.main, 0.3),
@@ -556,26 +611,35 @@ const ChatInterface = () => {
         fullScreen={window.innerWidth < 600}
         sx={{
           '& .MuiDialog-paper': {
-            borderRadius: { xs: 0, sm: 2 }
+            borderRadius: { xs: 0, sm: 2 },
+            maxHeight: { xs: '100%', sm: '80vh' },
           }
         }}
       >
         <DialogTitle sx={{ 
-          fontSize: { xs: '1.1rem', sm: '1.25rem' }
+          fontSize: { xs: '1.1rem', sm: '1.25rem' },
+          p: { xs: 2, sm: 3 }
         }}>
           Удалить чат?
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ p: { xs: 2, sm: 3 } }}>
           <Typography sx={{
-            fontSize: { xs: '0.9rem', sm: '1rem' }
+            fontSize: { xs: '0.95rem', sm: '1rem' }
           }}>
             Вы уверены, что хотите удалить этот чат? Это действие нельзя отменить.
           </Typography>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ p: { xs: 2, sm: 3 } }}>
           <Button 
             onClick={() => setIsDeleteDialogOpen(false)}
-            sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
+            sx={{ 
+              fontSize: { xs: '0.95rem', sm: '1rem' },
+              px: { xs: 2, sm: 3 },
+              py: { xs: 1, sm: 1.5 },
+              '&:active': {
+                transform: 'scale(0.95)',
+              },
+            }}
           >
             Отмена
           </Button>
@@ -583,7 +647,14 @@ const ChatInterface = () => {
             onClick={() => deleteChat(selectedChatId)} 
             color="error"
             variant="contained"
-            sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
+            sx={{ 
+              fontSize: { xs: '0.95rem', sm: '1rem' },
+              px: { xs: 2, sm: 3 },
+              py: { xs: 1, sm: 1.5 },
+              '&:active': {
+                transform: 'scale(0.95)',
+              },
+            }}
           >
             Удалить
           </Button>
