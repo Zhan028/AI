@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://aizhanba.com",
+      "permanent": true
+    }
+  ]
+}
